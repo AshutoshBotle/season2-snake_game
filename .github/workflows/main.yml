@@ -21,14 +21,24 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             set -ex
-            sudo -n apt update -y
-            sudo -n apt install -y python3 python3-pip python3-venv git
+            # Update system packages
+            sudo apt update -y
+            sudo apt install -y python3 python3-pip python3-venv git
+
+            # Clean up any old app directory
             rm -rf season2-snake_game
+
+            # Clone the repository
             git clone https://github.com/AshutoshBotle/season2-snake_game.git
             cd season2-snake_game
+
+            # Create a virtual environment and install dependencies
             python3 -m venv venv
             source venv/bin/activate
             pip install --upgrade pip
             pip install -r requirements.txt
+
+            # Run the Flask app in the background using nohup
             nohup venv/bin/python app.py > snake_game.log 2>&1 &
+
             echo "✅ Snake Game deployed successfully!"
